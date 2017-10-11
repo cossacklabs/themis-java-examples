@@ -45,3 +45,16 @@ Expected result: encrypted data from Android app can be decrypted by Data Simula
  
 Expected result: Secure Message is working fine between Simulator and themis-android.
 
+
+## Secure Session problem
+
+1. Open `MainActivitySecureSession.java`
+
+2. Open [Interactive Simulator](https://themis.cossacklabs.com/interactive-simulator/setup/#). Update client ID, client public keys, server key.
+
+4. Run simulator in SecureSession mode.
+
+5. Run Android app. See 'error occurred during unwrapping message. trying to recreate session' message.
+ 
+Expected result: Secure Session is working fine between Simulator and themis-android.
+

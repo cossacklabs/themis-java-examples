@@ -1,7 +1,7 @@
 package de.test.themistestapp;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 
@@ -10,29 +10,15 @@ import com.cossacklabs.themis.NullArgumentException;
 import com.cossacklabs.themis.SecureCell;
 import com.cossacklabs.themis.SecureCellData;
 import com.cossacklabs.themis.SecureCellException;
-import com.cossacklabs.themis.SecureMessageWrapException;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivitySecureCell extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Check secure message
-//        try {
-//            SecMessageExampleClient.SMessageCIClientTest();
-//        } catch (NullArgumentException e) {
-//            e.printStackTrace();
-//        } catch (SecureMessageWrapException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
 
         // Check secure cell
         try {
