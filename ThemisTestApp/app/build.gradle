@@ -29,6 +29,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile(name: 'themis-0.9.5-debug', ext: 'aar')
+    debugCompile(name: 'themis-0.9.5-debug', ext: 'aar')
     //compile(name: 'themis-0.9.5-release', ext: 'aar')
 }
