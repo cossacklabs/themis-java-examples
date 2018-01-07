@@ -61,7 +61,12 @@ public class MainActivitySecureCell extends AppCompatActivity {
     void workingDecryption(SecureCell sc) throws SecureCellException, NullArgumentException, InvalidArgumentException {
         // you can get similar string when run `workingEncryption` method
 
-        String encodedFromAndroid = "AAEBQAwAAAAQAAAADQAAABYHwshhi1OpIFEPSmst338IIJqkrhQkrp9nOHDbWCcs4TSBIX1JT5g1";
+        //String encodedFromAndroid = "AAEBQAwAAAAQAAAADQAAAM0IwxEylpWM/xmQdcqkjgNc9wK2CZfST31UwdRzd8P9gYpouh+wQLjC";
+
+        // x86
+        String encodedFromAndroid = "AAEBQAwAAAAQAAAADQAAAE+TcoFFZcUApecXp5BxP4QyB7WKtKvpLJ5Rfcp5Ud5PS4ZPuCHmM4/y";
+
+
 
         byte[] decodedString = Base64.decode(encodedFromAndroid, Base64.NO_WRAP);
         SecureCellData protectedDataAgain = new SecureCellData(decodedString, null);
@@ -75,7 +80,7 @@ public class MainActivitySecureCell extends AppCompatActivity {
     void notWorkingDecryption(SecureCell sc) throws SecureCellException, NullArgumentException, InvalidArgumentException {
         // you can get this string from Java example (external code)
 
-        String encodedFromJavaCode = "AAEBQAwAAAAQAAAADwAAAH8oJ4X48l+E7V5CZtk+uO99JZb7enzxuCoLOrG8nW9Xzkep5+QyP+Se6Qo=";
+        String encodedFromJavaCode = "AAEBQAwAAAAQAAAADwAAAKd8h0hYwFbAAWDZijqcBz5//a9yBaRsG9sxIxvtReOs8XJT6I18TBTgbiw=";
         byte[] decodedString = Base64.decode(encodedFromJavaCode, Base64.NO_WRAP);
         SecureCellData protectedDataAgain = new SecureCellData(decodedString, null);
 

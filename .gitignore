@@ -10,3 +10,8 @@ cmake-build-debug/
 # IntelliJ
 out/*
 build/*
+
+java-example/out/*
+java-example/build/*
+
+ThemisTestApp/build/*
