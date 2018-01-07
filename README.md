@@ -1,7 +1,13 @@
-Android app and Java code with weird themis secure cell / secure message bug.
+Android app (x86) and Java code (x64) with weird themis secure cell / secure message bug.
 
 
 Example project illustrating the issue https://github.com/cossacklabs/themis/issues/220
+
+## Update
+
+Not Android problem, because code is compatible on x64 environment. 
+
+It's x86 / x64 compatibility problem.
 
 ## Problem description
 
@@ -27,15 +33,15 @@ So, Android wrapper is the only one that is not compatible with others.
 
 These possible reasons were investigated:
 
-- themis version incompatibility. All tests are made on latest themis code (master branch). However, we checked that the problem existed starting from themis 0.9.3.
+- ~~themis version incompatibility. All tests are made on latest themis code (master branch). However, we checked that the problem existed starting from themis 0.9.3.~~
 
-- encoding problem. The easiest way to send data in/out is to encode it to base64. It might happen that Android uses different base64 encoding that others. However, this is likely possible, because we checked encoded/decoded data byte-per-byte, and it looks the same between Java and Android code.
+- ~~encoding problem. The easiest way to send data in/out is to encode it to base64. It might happen that Android uses different base64 encoding that others. However, this is likely possible, because we checked encoded/decoded data byte-per-byte, and it looks the same between Java and Android code.~~
 
-- BoringSSL compatibility? However, themis_jni is built with boringSSL engine for both Java and Android code. 
+- ~~BoringSSL compatibility? However, themis_jni is built with boringSSL engine for both Java and Android code.~~
 
-- JNI layer compatibility. JNI code might be interpreted differently on Android and Java VMs. Type size problems?
+- ~~JNI layer compatibility. JNI code might be interpreted differently on Android and Java VMs. Type size problems?~~
 
-- magic?
+- x86 and x64 compatibility. Android app is compatible with Java app when running on x64 device / emulator.
 
 ### Other
 
@@ -54,7 +60,7 @@ Secure Cell seal mode is a platform-to-test, because this is the most simple con
 ### Android example
 
 1. Open `ThemisTestApp`, import as Android Studio project.
-2. Included library: `app/libs/themis-0.9.5-debug.aar`, linked by gradle (inside `app/build.gradle`)
+2. Included library: `app/libs/themis-release.aar`, linked by gradle (inside `app/build.gradle`)
 2. Run `Secure Cell`.
 
 
@@ -73,7 +79,7 @@ Secure Cell seal mode is a platform-to-test, because this is the most simple con
 5. Build `themis.aar` archive:
 https://github.com/cossacklabs/themis/wiki/Building-and-installing#android
 
-  You will get it in the themis folder `build/outputs/aar/`. Copy archive into `ThemisTestApp/app/libs/` folder and rename to `themis-0.9.5-debug.aar`
+  You will get it in the themis folder `build/outputs/aar/`. Copy archive into `ThemisTestApp/app/libs/` folder and rename to `themis-release.aar`
 
 6. Now you can run this :)
 
