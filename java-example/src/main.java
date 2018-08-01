@@ -11,70 +11,48 @@ import java.util.Base64;
 public class main {
 
   static Charset charset = StandardCharsets.UTF_8;
-  static String pass = "pass";
-  static byte[] passKey = pass.getBytes(charset);
-
-  static String message = "hello from java";
-  static byte[] context = null;
 
   public static void main(final String[] args) throws NullArgumentException, SecureMessageWrapException, IOException, SecureSessionException, SecureCellException, InvalidArgumentException {
-    //SMessageClient.SMessageCIClientTest();
-    //SSessionClient.SSessionCIClientTest();
-//    checkLocalSecureMessage();
+    encryptDataForStoring();
+    encryptDataForMessaging();
 
-
-    SecureCell sc = new SecureCell(passKey);
-
-    workingEncryption(sc);
-    workingDecryption(sc);
-    notWorkingDecryption(sc);
-
+    // tests with Themis Interactive simulator
+    // setup Themis IS first:
+    // https://themis.cossacklabs.com/interactive-simulator/setup/
+//    SMessageClient.runSMessageWithThemisInteractiveSimulator();
+//    SSessionClient.runSSessionWithThemisInteractiveSimulator();
   }
 
-  static void workingEncryption(SecureCell sc) throws SecureCellException, NullArgumentException {
-    SecureCellData protectedData = sc.protect(passKey, context, message.getBytes(charset));
-    String encodedString = Base64.getEncoder().encodeToString(protectedData.getProtectedData());
-    System.out.println("data = " + encodedString);
-  }
-
-  static void workingDecryption(SecureCell sc) throws SecureCellException, NullArgumentException, InvalidArgumentException {
-    // you can get similar string when run `workingEncryption` method
-
-    String encodedFromJavaCode = "AAEBQAwAAAAQAAAADwAAAKi2sZkOLdyLBduo+AybdaovJ9OdWi1pCwgKYLP5PJQQ0D+FoUUNeNSJ+zU=";
-    byte[] decodedString = Base64.getDecoder().decode(encodedFromJavaCode);
-    SecureCellData protectedDataAgain = new SecureCellData(decodedString, null);
-
-    byte[] unprotected = sc.unprotect(passKey, context, protectedDataAgain);
-    String str = new String(unprotected);
-    System.out.println(str);
-  }
+  static void encryptDataForStoring() throws SecureCellException, NullArgumentException, InvalidArgumentException {
+    byte[] message = "data to encrypt".getBytes(charset);
+    byte[] optionalContext = "some context".getBytes(charset);
+    byte[] password = "pass".getBytes(charset);
 
 
-  static void notWorkingDecryption(SecureCell sc) throws SecureCellException, NullArgumentException, InvalidArgumentException {
-    // you can get this string from Java example (external code)
+    System.out.println("Running SecureCell example");
+    SecureCell sc = new SecureCell(password);
 
-    //String encodedFromAndroid = "AAEBQAwAAAAQAAAADQAAAM0IwxEylpWM/xmQdcqkjgNc9wK2CZfST31UwdRzd8P9gYpouh+wQLjC";
+    SecureCellData encryptedData = sc.protect(password, optionalContext, message);
+    String encryptedDataString = Base64.getEncoder().encodeToString(encryptedData.getProtectedData());
+    System.out.println("Encrypted encoded data = \n" + encryptedDataString);
 
-    // x86
-    String encodedFromAndroid = "AAEBQAwAAAAQAAAADwAAAKd8h0hYwFbAAWDZijqcBz5//a9yBaRsG9sxIxvtReOs8XJT6I18TBTgbiw=";
+    byte[] decodedEncryptedString = Base64.getDecoder().decode(encryptedDataString);
+    SecureCellData encryptedDataFromString = new SecureCellData(decodedEncryptedString, null);
 
-
-
-    byte[] decodedString = Base64.getDecoder().decode(encodedFromAndroid);
-    SecureCellData protectedDataAgain = new SecureCellData(decodedString, null);
-
-    byte[] unprotected = sc.unprotect(passKey, context, protectedDataAgain);
-    String str = new String(unprotected);
-    System.out.println(str);
+    byte[] unprotected = sc.unprotect(password, optionalContext, encryptedDataFromString);
+    String decryptedString = new String(unprotected);
+    System.out.println("Decrypted data = "+ decryptedString);
   }
 
 
-  static void checkLocalSecureMessage() throws UnsupportedEncodingException, NullArgumentException, SecureMessageWrapException {
-    Charset charset = StandardCharsets.UTF_8;
+  static void encryptDataForMessaging() throws UnsupportedEncodingException, NullArgumentException, SecureMessageWrapException {
+    // keys can be generated using KeypairGenerator
     String clientPrivateKey = "UkVDMgAAAC1EvnquAPUxxwJsoJxoMAkEF7c06Fo7dVwnWPnmNX5afyjEEGmG";
     String serverPublicKey = "VUVDMgAAAC1FJv/DAmg8/L1Pl5l6ypyRqXUU9xQQaAgzfRZ+/gsjqgEdwXhc";
 
-    String message = "some weird message here";
+    String message = "message to send";
+
+    System.out.println("Running SecureMessage example");
 
     PrivateKey privateKey = new PrivateKey(Base64.getDecoder().decode(clientPrivateKey.getBytes(charset.name())));
     PublicKey publicKey = new PublicKey(Base64.getDecoder().decode(serverPublicKey.getBytes(charset.name())));
@@ -83,17 +61,12 @@ public class main {
 
     final SecureMessage sm = new SecureMessage(privateKey, publicKey);
 
-    byte[] wrappedMessage = sm.wrap(message.getBytes(charset.name()));
+    byte[] wrappedMessage = sm.wrap(message.getBytes(charset));
     String encodedMessage = Base64.getEncoder().encodeToString(wrappedMessage);
     System.out.println("EncodedMessage = " + encodedMessage);
 
     byte[] wrappedMessageFromB64 = Base64.getDecoder().decode(encodedMessage);
     String decodedMessage = new String(sm.unwrap(wrappedMessageFromB64), charset);
     System.out.println("DecodedMessage = " + decodedMessage);
-
-    String encodedMessageFromExternal = "ICcEJksAAAAAAQFADAAAABAAAAAXAAAAnner6w5kgaRH5O8Xb8C08zu+EqJuaAPNH7bzXtoq/6xTmQkp9kfdOqDfsbXaDSpd3kYG";
-    byte[] wrappedMessageFromB64External = Base64.getDecoder().decode(encodedMessageFromExternal);
-    String decodedMessageExternal = new String(sm.unwrap(wrappedMessageFromB64External), charset);
-    System.out.println("DecodedMessage = " + decodedMessageExternal);
   }
 }
