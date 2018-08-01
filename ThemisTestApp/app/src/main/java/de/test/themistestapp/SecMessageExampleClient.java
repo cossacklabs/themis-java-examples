@@ -15,6 +15,12 @@ import javax.net.ssl.*;
 
 import com.cossacklabs.themis.*;
 
+// ---------------------- IMPORTANT SETUP ---------------------------------------
+
+// User id and Server Public Key should be copied from the Server Setup Page
+// https://themis.cossacklabs.com/interactive-simulator/setup/
+// Server public key ("server key"),
+
 public class SecMessageExampleClient {
 
     public static String ClientPrivateKey = "UkVDMgAAAC1EvnquAPUxxwJsoJxoMAkEF7c06Fo7dVwnWPnmNX5afyjEEGmG";
@@ -118,49 +124,4 @@ public class SecMessageExampleClient {
             }
         });
     }
-
-//    public static String clientPrivateKey1 = "UkVDMgAAAC1c3xE6APxYe3SHAzQKxK0JSbfZ9+NCaIP0CBowNaR0W5fPo73T";
-//    public static String clientPublicKey1 = "VUVDMgAAAC0IPC1eA0jOwhRlyzcJOfLkazKMjXpNBPjxFzfaBKxXk0ak3t9g";
-//
-//    public static String clientPrivateKey2 = "UkVDMgAAAC125EhOAPjRneVidNwhm1J2wedttMz4PAw4u1RRX+Suv3xmcSQS";
-//    public static String clientPublicKey2 = "VUVDMgAAAC26OonuAzes2JBJSXvNCMiiTf3qsAD4Ae0nyQ2uEd5JNmvSjp9r";
-
-//    public static void SMessageCIClientTest() throws NullArgumentException, SecureMessageWrapException, IOException {
-//
-//        PrivateKey privateKey1 = new PrivateKey(Base64.decode(clientPrivateKey1.getBytes("UTF-8"), Base64.NO_WRAP));
-//        PublicKey publicKey1 = new PublicKey(Base64.decode(clientPublicKey1.getBytes("UTF-8"), Base64.NO_WRAP));
-//        PrivateKey privateKey2 = new PrivateKey(Base64.decode(clientPrivateKey2.getBytes("UTF-8"), Base64.NO_WRAP));
-//        PublicKey publicKey2 = new PublicKey(Base64.decode(clientPublicKey2.getBytes("UTF-8"), Base64.NO_WRAP));
-//
-//
-//        final SecureMessage sm1 = new SecureMessage(privateKey1, publicKey2);
-//        final SecureMessage sm2 = new SecureMessage(privateKey2, publicKey1);
-//
-//        byte[] wrappedMessage = sm1.wrap(Message.getBytes("UTF-8"));
-//        String wrappedMessageA = Base64.encodeToString(wrappedMessage, Base64.NO_WRAP);
-//
-//        byte[] unwrappedMessage = sm2.unwrap(wrappedMessage);
-//        String unwrappedMessageA = new String(unwrappedMessage, StandardCharsets.UTF_8);
-//
-//        Log.d("SMC", "original message = " + Message);
-//        Log.d("SMC", "wrappedMessageA = " + wrappedMessageA);
-//        Log.d("SMC", "unwrappedMessageA = " + unwrappedMessageA);
-//
-//
-////        String EncodedMessage = Base64.encodeToString(wrappedMessage, Base64.NO_WRAP);
-////
-////        PostRequest(URL, EncodedMessage, new CallbackListener<byte[]>() {
-////            @Override
-////            public void onComplete(byte[] value) {
-////                try {
-////                    String unwrappedResult = new String(sm.unwrap(value), StandardCharsets.UTF_8);
-////                    System.out.println(unwrappedResult);
-////                    Log.d("SMC", "unwrappedResult = " + unwrappedResult);
-////
-////                } catch (Exception e) {
-////                    e.printStackTrace();
-////                }
-////            }
-////        });
-//    }
 }

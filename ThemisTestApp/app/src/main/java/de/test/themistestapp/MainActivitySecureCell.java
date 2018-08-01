@@ -16,72 +16,35 @@ import java.nio.charset.StandardCharsets;
 
 public class MainActivitySecureCell extends AppCompatActivity {
 
-    Charset charset = StandardCharsets.UTF_8;
-    String pass = "pass";
-    byte[] passKey = pass.getBytes(charset);
-
-    String message = "hello message";
-    byte[] context = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Check secure cell
+        // Secure cell
         try {
+            encryptDataForStoring();
 
-            SecureCell sc = new SecureCell(passKey, SecureCell.MODE_SEAL);
-
-            // it's working
-            workingEncryption(sc);
-
-            // decrypt data encrypted by this code
-            workingDecryption(sc);
-
-            // decrypt data encrypted by any other code (e.g. Java)
-            notWorkingDecryption(sc);
-
-        } catch (InvalidArgumentException e) {
-            e.printStackTrace();
-        } catch (NullArgumentException e) {
-            e.printStackTrace();
-        } catch (SecureCellException e) {
+        } catch (InvalidArgumentException | NullArgumentException | SecureCellException e) {
             e.printStackTrace();
         }
-
     }
 
-    void workingEncryption(SecureCell sc) throws SecureCellException, NullArgumentException {
+    void encryptDataForStoring() throws SecureCellException, NullArgumentException, InvalidArgumentException {
+        Charset charset = StandardCharsets.UTF_8;
+        String pass = "pass";
+        byte[] passKey = pass.getBytes(charset);
+
+        String message = "hello message";
+        byte[] context = null;
+
+        SecureCell sc = new SecureCell(passKey, SecureCell.MODE_SEAL);
+
         SecureCellData protectedData = sc.protect(passKey, context, message.getBytes(charset));
         String encodedString = Base64.encodeToString(protectedData.getProtectedData(), Base64.NO_WRAP);
         Log.d("SMC", "encrypted string = " + encodedString);
-    }
 
-    void workingDecryption(SecureCell sc) throws SecureCellException, NullArgumentException, InvalidArgumentException {
-        // you can get similar string when run `workingEncryption` method
-
-        //String encodedFromAndroid = "AAEBQAwAAAAQAAAADQAAAM0IwxEylpWM/xmQdcqkjgNc9wK2CZfST31UwdRzd8P9gYpouh+wQLjC";
-
-        // x86
-        String encodedFromAndroid = "AAEBQAwAAAAQAAAADQAAAE+TcoFFZcUApecXp5BxP4QyB7WKtKvpLJ5Rfcp5Ud5PS4ZPuCHmM4/y";
-
-
-
-        byte[] decodedString = Base64.decode(encodedFromAndroid, Base64.NO_WRAP);
-        SecureCellData protectedDataAgain = new SecureCellData(decodedString, null);
-
-        byte[] unprotected = sc.unprotect(passKey, context, protectedDataAgain);
-        String decryptedData = new String(unprotected, charset);
-        Log.d("SMC", "decrypted data = " + decryptedData);
-    }
-
-
-    void notWorkingDecryption(SecureCell sc) throws SecureCellException, NullArgumentException, InvalidArgumentException {
-        // you can get this string from Java example (external code)
-
-        String encodedFromJavaCode = "AAEBQAwAAAAQAAAADwAAAKd8h0hYwFbAAWDZijqcBz5//a9yBaRsG9sxIxvtReOs8XJT6I18TBTgbiw=";
-        byte[] decodedString = Base64.decode(encodedFromJavaCode, Base64.NO_WRAP);
+        byte[] decodedString = Base64.decode(encodedString, Base64.NO_WRAP);
         SecureCellData protectedDataAgain = new SecureCellData(decodedString, null);
 
         byte[] unprotected = sc.unprotect(passKey, context, protectedDataAgain);

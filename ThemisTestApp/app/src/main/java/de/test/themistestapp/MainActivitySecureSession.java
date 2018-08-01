@@ -19,6 +19,9 @@ public class MainActivitySecureSession extends AppCompatActivity {
 
         // Check secure session
         try {
+            // tests with Themis Interactive simulator
+            // setup Themis IS first:
+            // https://themis.cossacklabs.com/interactive-simulator/setup/
             SecSessionExampleClient.SSessionCIClientTest();
         } catch (NullArgumentException e) {
             e.printStackTrace();

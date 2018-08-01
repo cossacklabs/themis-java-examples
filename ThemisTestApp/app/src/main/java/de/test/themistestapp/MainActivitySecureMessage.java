@@ -27,9 +27,13 @@ public class MainActivitySecureMessage extends AppCompatActivity {
             // Check secure message
             try {
 
+                secureMessageLocal();
+
+                // tests with Themis Interactive simulator
+                // setup Themis IS first:
+                // https://themis.cossacklabs.com/interactive-simulator/setup/
                 //SecMessageExampleClient.SMessageCIClientTest();
 
-                runSimpleLocalCheck();
 
             } catch (NullArgumentException e) {
                 e.printStackTrace();
@@ -40,7 +44,7 @@ public class MainActivitySecureMessage extends AppCompatActivity {
             }
         }
 
-        void runSimpleLocalCheck() throws UnsupportedEncodingException, NullArgumentException, SecureMessageWrapException {
+        void secureMessageLocal() throws UnsupportedEncodingException, NullArgumentException, SecureMessageWrapException {
 
             Charset charset = StandardCharsets.UTF_8;
             String clientPrivateKey = "UkVDMgAAAC1EvnquAPUxxwJsoJxoMAkEF7c06Fo7dVwnWPnmNX5afyjEEGmG";
