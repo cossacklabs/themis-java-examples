@@ -1,54 +1,11 @@
-Android app (x86) and Java code (x64) with weird themis secure cell / secure message bug.
+Desktop Java and Android Java simple example projects.
+
+This are demo projects that enhance documentation for Java and Android that you can find on wiki:
+
+https://github.com/cossacklabs/themis/wiki/Java-and-Android-Howto
 
 
-Example project illustrating the issue https://github.com/cossacklabs/themis/issues/220
-
-## Update
-
-Not Android problem, because code is compatible on x64 environment. 
-
-It's x86 / x64 compatibility problem.
-
-## Problem description
-
-SecureCell is encryption-decryption tool from [themis](https://github.com/cossacklabs/themis). Both Android and Java wrapper share same code.
-
-- themis C crypto code.
-- [themis_jni code](https://github.com/cossacklabs/themis/tree/master/jni) (C-level layer between C core and Java code).
-- Java wrapper ([src/wrapper/java](https://github.com/cossacklabs/themis/tree/master/src/wrappers/themis/java/com/cossacklabs/themis)).
-- client app code (android code or Java code that uses encryption-decryption).
-
-### Problem definition.
-
-Java app and Android app can encrypt-decrypt data they create. Thus, if you encrypt data on Android app, you can decrypt it from Android app. If you encrypt data on Java app, you can decrypt it from Java app. 
-
-However, if you encrypt data on Android, it's impossible to decrypt it on any other platform (Java, Go, Python, etc). Same thing, Android wraper cannot decrypt data encrypted on any other platform. 
-
-Java wrapper encryption-decryption compatibility was checked among other platforms and languages (go, python, ruby, swift) and is known to be compatible with all of them.
-
-So, Android wrapper is the only one that is not compatible with others.
-
-
-### Possible reasons
-
-These possible reasons were investigated:
-
-- ~~themis version incompatibility. All tests are made on latest themis code (master branch). However, we checked that the problem existed starting from themis 0.9.3.~~
-
-- ~~encoding problem. The easiest way to send data in/out is to encode it to base64. It might happen that Android uses different base64 encoding that others. However, this is likely possible, because we checked encoded/decoded data byte-per-byte, and it looks the same between Java and Android code.~~
-
-- ~~BoringSSL compatibility? However, themis_jni is built with boringSSL engine for both Java and Android code.~~
-
-- ~~JNI layer compatibility. JNI code might be interpreted differently on Android and Java VMs. Type size problems?~~
-
-- x86 and x64 compatibility. Android app is compatible with Java app when running on x64 device / emulator.
-
-### Other
-
-Secure Cell seal mode is a platform-to-test, because this is the most simple configuration. However, SecureMessage wrap-unwrap, and SecureSession connections are not working from Android code as well.
-
-
-## Set up.
+# How to run?
 
 ### Java example
 
@@ -63,8 +20,64 @@ Secure Cell seal mode is a platform-to-test, because this is the most simple con
 2. Included library: `app/libs/themis-release.aar`, linked by gradle (inside `app/build.gradle`)
 2. Run `Secure Cell`.
 
+# What are these examples?
 
-## Build manually
+Client code (both Android and Java) contains simple example for symmetric and asymmetric encryption.
+
+1. Symmetric encryption using Themis Secure Cell. Open `main` file for Java and `MainActivitySecureCell` for Android.
+
+```
+encryptDataForStoring()
+```
+
+1.1 Create SecureCell with desired password:
+ 
+```
+SecureCell sc = new SecureCell(passKey);
+```
+
+1.2. Encrypt data. You will get base64 encoded string as output in console.
+
+```
+SecureCellData encryptedData = sc.protect(password, optionalContext, message);
+String encryptedDataString = Base64.getEncoder().encodeToString(encryptedData.getProtectedData());
+```
+
+1.3. Decrypt data previously encrypted. You will get original message as output in console.
+
+```
+byte[] decodedEncryptedString = Base64.getDecoder().decode(encryptedDataString);
+SecureCellData encryptedDataFromString = new SecureCellData(decodedEncryptedString, null);
+
+byte[] unprotected = sc.unprotect(password, optionalContext, encryptedDataFromString);
+String decryptedString = new String(unprotected);
+```
+
+2. Asymmetric encryption using Themis Secure Message.
+
+2.1 For Java, see `main` file:
+
+```
+encryptDataForMessaging
+```
+
+2.2 For Android, see `MainActivitySecureMessage` file:
+
+```
+secureMessageLocal
+```
+
+
+# Themis Interactive simulator
+
+Both examples contains ready-to-use solutions to test asymmetric encryption with Themis Interactive Server. No need to run your own server to check if you have implemented encryption correctly.
+
+For Java check `SMessageClient` and `SSessionClient`. For Android check `MainActivitySecureMessage` and `MainActivitySecureSession`.
+
+Comprehenvise documentation can be found below: https://themis.cossacklabs.com/interactive-simulator/setup/
+
+
+# How to build Themis library manually?
 
 1. Copy latest Java wrapper from ([themis/src/wrappers/themis/java](https://github.com/cossacklabs/themis/tree/master/src/wrappers/themis/java/com/cossacklabs/themis)). Paste into `java-example/src` folder.
 
@@ -83,37 +96,3 @@ https://github.com/cossacklabs/themis/wiki/Building-and-installing#android
 
 6. Now you can run this :)
 
-
-
-# Execution
-
-Client code (both Android and Java) contains simple example.
-
-1. Create SecureCell with the same password
- 
-```
-SecureCell sc = new SecureCell(passKey);
-```
-
-2. Encrypt data. You will get base64 encoded string as output in console.
-
-
-```
-workingEncryption(sc);
-```
-
-3. Decrypt data previously encrypted by this platform. You will get original message as output in console.
-
-```
-workingDecryption(sc);
-```
-
-4. Decrypt data encrypted by another platform. You will get error message. Including line number of internal themis-core function that fails.
-
-```
-notWorkingDecryption(sc);
-```
-
-# Expected result
-
-Both Android code and Java code can decrypt messages encrypted by each other.
