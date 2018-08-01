@@ -23,6 +23,11 @@ import java.util.Arrays;
 
 import javax.net.ssl.HttpsURLConnection;
 
+// ---------------------- IMPORTANT SETUP ---------------------------------------
+
+// User id, Server id and Server Public Key should be copied from the Server Setup Page
+// https://themis.cossacklabs.com/interactive-simulator/setup/
+// Server public key ("server key"),
 
 public class SecSessionExampleClient {
 
