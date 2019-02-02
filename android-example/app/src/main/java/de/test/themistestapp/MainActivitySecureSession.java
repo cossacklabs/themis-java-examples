@@ -1,4 +1,4 @@
-package de.test.themistestapp;
+package com.cossacklabs.themis.android.example;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

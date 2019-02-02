@@ -1,4 +1,4 @@
-package de.test.themistestapp;
+package com.cossacklabs.themis.android.example;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -67,7 +67,7 @@ public class MainActivitySecureMessage extends AppCompatActivity {
             String decodedMessage = new String(sm.unwrap(wrappedMessageFromB64), charset);
             Log.d("SMC", "DecodedMessageFromOwnCode = " + decodedMessage);
 
-            String encodedMessageFromExternal = "ICcEJksAAAAAAQFADAAAABAAAAAXAAAAZH8poysspqhDVpjH3LPLOH88S5YlRsxinK/q+tbhgm7REwFjcf2rfE5K3SjxgK1HS9bg";
+            String encodedMessageFromExternal = "ICcEJksAAAAAAQFADAAAABAAAAAXAAAAFi/vBAb2fiNBqf3a6wgyVoMAdPXpJ14ZYxk/oaUcwSmKnNgmRzaH7JkIQBvFChAVK9tF";
             byte[] wrappedMessageFromB64External = Base64.decode(encodedMessageFromExternal, Base64.NO_WRAP);
             String decodedMessageExternal = new String(sm.unwrap(wrappedMessageFromB64External), charset);
             Log.d("SMC", "DecodedMessageFromExternal = " + decodedMessageExternal);

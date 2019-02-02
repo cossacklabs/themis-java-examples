@@ -10,15 +10,31 @@ https://github.com/cossacklabs/themis/wiki/Java-and-Android-Howto
 ### Java example
 
 1. Open `java-example`, import as IDEA project.
-2. Included library: `lib/libthemis_jni.dylib`
-3. Included themis/java source: `src/com/cossacklabs/themis`
+2. Included library: `lib/libthemis_jni.dylib`, which should be manually built (see below).
+3. Included themis/java source: `src/com/cossacklabs/themis`.
 4. Run `main.java`.
 
 ### Android example
 
-1. Open `ThemisTestApp`, import as Android Studio project.
-2. Included library: `app/libs/themis-release.aar`, linked by gradle (inside `app/build.gradle`)
-2. Run `Secure Cell`.
+1. Open `android-example`, import as Android Studio project.
+2. Included library Themis for Android. Include Maven repository and link Themis as describe below:
+
+build.gradle:
+```    
+repositories {
+    google()
+    jcenter()
+    maven { url "https://dl.bintray.com/cossacklabs/maven/" }
+}
+
+dependencies {
+    implementation 'com.cossacklabs.com:themis:0.10.0'
+}
+```
+
+3. Run `MainActivitySecureCell` as secure data storage or `MainActivitySecureMessage` to see secure messaging example.
+
+
 
 # What are these examples?
 
@@ -79,20 +95,35 @@ Comprehenvise documentation can be found below: https://themis.cossacklabs.com/i
 
 # How to build Themis library manually?
 
-1. Copy latest Java wrapper from ([themis/src/wrappers/themis/java](https://github.com/cossacklabs/themis/tree/master/src/wrappers/themis/java/com/cossacklabs/themis)). Paste into `java-example/src` folder.
+### For Desktop Java
+
+1. Copy latest Themis Java code to your project from ([themis/src/wrappers/themis/java](https://github.com/cossacklabs/themis/tree/master/src/wrappers/themis/java/com/cossacklabs/themis)). Paste into `java-example/src` folder.
 
 2. Clone and compile BoringSSL for your machine according instructions in the [themis -> Building and Installing -> BoringSSL](https://github.com/cossacklabs/themis/wiki/Building-and-installing#boringssl) section. 
 
 3. Compile `themis_jni` that uses BoringSSL according instructions in the [themis -> Java and Android Howto](https://github.com/cossacklabs/themis/wiki/Java-and-Android-Howto#building-themis-for-java) section.
 
-   Now you have `libthemis_jni` shared library located in the themis folder `build_with_boringssl_jni` folder. Copy library and put into `java-example/lib` folder.
+4. Link compiled library to your project. Take `libthemis_jni` shared library located in the `build_with_boringssl_jni` folder. Copy library and put into `java-example/lib` folder.
 
-4. Compile BoringSLL for android architectures, check instructions in the [themis -> Building and Installing -> Android](https://github.com/cossacklabs/themis/wiki/Building-and-installing#android) section. 
 
-5. Build `themis.aar` archive:
-https://github.com/cossacklabs/themis/wiki/Building-and-installing#android
+### For Android
 
-  You will get it in the themis folder `build/outputs/aar/`. Copy archive into `ThemisTestApp/app/libs/` folder and rename to `themis-release.aar`
+1. Build `themis.aar` archive [using Docker image](https://github.com/cossacklabs/themis/wiki/Java-and-Android-Howto):
 
-6. Now you can run this :)
+```
+docker run --rm -it -v $(pwd):/projects cossacklabs/android-build bash -c 'git clone https://github.com/cossacklabs/themis.git && cd themis && git submodule update --init && ./gradlew assembleRelease'
+```
 
+2. Link compiled library. You will get Themis as complied .aar library in folder `build/outputs/aar/`. Copy archive into `android-example/app/libs/` folder, and link in `build.gradle`
+
+```
+repositories {
+	flatDir {
+		dirs 'libs'
+	}
+}
+
+dependencies {
+	implementation(name: 'themis-0.10.0', ext: 'aar')
+}
+```
