@@ -1,4 +1,4 @@
-package de.test.themistestapp;
+package com.cossacklabs.themis.android.example;
 
 import android.os.AsyncTask;
 import android.util.Base64;

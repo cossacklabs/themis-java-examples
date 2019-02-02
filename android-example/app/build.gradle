@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "de.test.themistestapp"
+        applicationId "com.cossacklabs.themis.android.example"
         minSdkVersion 25
         targetSdkVersion 26
         versionCode 1
