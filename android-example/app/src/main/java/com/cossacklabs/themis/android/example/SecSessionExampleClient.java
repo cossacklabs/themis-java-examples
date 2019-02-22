@@ -4,17 +4,21 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
-import com.cossacklabs.themis.*;
+import com.cossacklabs.themis.ISessionCallbacks;
+import com.cossacklabs.themis.NullArgumentException;
+import com.cossacklabs.themis.PrivateKey;
+import com.cossacklabs.themis.PublicKey;
+import com.cossacklabs.themis.SecureMessageWrapException;
+import com.cossacklabs.themis.SecureSession;
+import com.cossacklabs.themis.SecureSessionException;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -85,13 +89,15 @@ public class SecSessionExampleClient {
                         inputStream = connection.getErrorStream();
                     }
 
-                    // parse stream
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                    String temp, response = "";
-                    while ((temp = bufferedReader.readLine()) != null) {
-                        response += temp;
+                    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                    int nRead;
+                    byte[] data = new byte[1024];
+                    while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                        buffer.write(data, 0, nRead);
                     }
-                    return response.getBytes("UTF-8");
+
+                    buffer.flush();
+                    return buffer.toByteArray();
 
                 } catch (IOException e) {
                     e.printStackTrace();
