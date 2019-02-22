@@ -1,19 +1,29 @@
 package com.cossacklabs.themis.android.example;
 
-import java.io.*;
-import java.net.*;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
-import javax.net.ssl.*;
+import com.cossacklabs.themis.NullArgumentException;
+import com.cossacklabs.themis.PrivateKey;
+import com.cossacklabs.themis.PublicKey;
+import com.cossacklabs.themis.SecureMessage;
+import com.cossacklabs.themis.SecureMessageWrapException;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
-import com.cossacklabs.themis.*;
+import javax.net.ssl.HttpsURLConnection;
 
 // ---------------------- IMPORTANT SETUP ---------------------------------------
 
@@ -71,13 +81,15 @@ public class SecMessageExampleClient {
                         inputStream = connection.getErrorStream();
                     }
 
-                    // parse stream
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                    String temp, response = "";
-                    while ((temp = bufferedReader.readLine()) != null) {
-                        response += temp;
+                    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                    int nRead;
+                    byte[] data = new byte[1024];
+                    while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                        buffer.write(data, 0, nRead);
                     }
-                    return response.getBytes("UTF-8");
+
+                    buffer.flush();
+                    return buffer.toByteArray();
 
                 } catch (IOException e) {
                     e.printStackTrace();
