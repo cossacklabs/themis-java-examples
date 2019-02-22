@@ -1,6 +1,5 @@
 package com.cossacklabs.themis.android.example;
 
-import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
@@ -10,20 +9,10 @@ import com.cossacklabs.themis.PublicKey;
 import com.cossacklabs.themis.SecureMessage;
 import com.cossacklabs.themis.SecureMessageWrapException;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-
-import javax.net.ssl.HttpsURLConnection;
+import java.util.concurrent.Executors;
 
 // ---------------------- IMPORTANT SETUP ---------------------------------------
 
@@ -31,108 +20,54 @@ import javax.net.ssl.HttpsURLConnection;
 // https://themis.cossacklabs.com/interactive-simulator/setup/
 // Server public key ("server key"),
 
-public class SecMessageExampleClient {
+class SecMessageExampleClient {
 
-    public static String ClientPrivateKey = "UkVDMgAAAC1EvnquAPUxxwJsoJxoMAkEF7c06Fo7dVwnWPnmNX5afyjEEGmG";
-    public static String ClientPublicKey = "VUVDMgAAAC18urRTA1H1hts93vlLXX59OuyVnY1tGFxl/F3PkhDtzrdQETMi";
-    public static String ServerPublicKey = "VUVDMgAAAC1FJv/DAmg8/L1Pl5l6ypyRqXUU9xQQaAgzfRZ+/gsjqgEdwXhc";
+    private final static String LOG_TAG = "SMC";
 
-    public static String Message = "meow";
-    public static String URL = "https://themis.cossacklabs.com/api/sjSwNQuZIaqsLJt/";
+    private final static String CLIENT_PRIVATE_KEY = "UkVDMgAAAC1EvnquAPUxxwJsoJxoMAkEF7c06Fo7dVwnWPnmNX5afyjEEGmG";
+    private final static String CLIENT_PUBLIC_KEY = "VUVDMgAAAC18urRTA1H1hts93vlLXX59OuyVnY1tGFxl/F3PkhDtzrdQETMi";
+    private final static String SERVER_PUBLIC_KEY = "VUVDMgAAAC1FJv/DAmg8/L1Pl5l6ypyRqXUU9xQQaAgzfRZ+/gsjqgEdwXhc";
 
-    public static void PostRequest(String url, String message, final CallbackListener<byte[]> listener) throws IOException {
-        AsyncTask<String, Void, byte[]> task = new AsyncTask<String, Void, byte[]>() {
-            @Override
-            protected byte[] doInBackground(String... strings) {
-                String httpsURL = strings[0];
-                String message = strings[1];
+    private final static String MESSAGE = "meow";
+    private final static String URL = "https://themis.cossacklabs.com/api/sjSwNQuZIaqsLJt/";
 
-                try {
-                    String query = "message="+URLEncoder.encode(message,"UTF-8");
-                    //String query = "message="+message;
+    private final static Charset CHARSET = StandardCharsets.UTF_8;
 
-                    URL url = new URL(httpsURL);
+    private final HttpClient httpClient = new HttpClient(Executors.newSingleThreadExecutor());
 
-                    HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Content-length", String.valueOf(query.length()));
-                    connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
-                    connection.setDoInput(true);
+    void testSMessageCIClient() throws NullArgumentException, SecureMessageWrapException {
 
-                    OutputStream outputStream = new BufferedOutputStream(connection.getOutputStream());
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
-                    writer.write(query);
-                    writer.flush();
-                    writer.close();
-                    outputStream.close();
-
-                    connection.connect();
-
-                    String m = connection.getResponseMessage();
-                    Log.d("SMC", "getResponseMessage = " + m);
-
-                    InputStream inputStream;
-
-                    // get stream
-                    if (connection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
-                        inputStream = connection.getInputStream();
-                    } else {
-                        inputStream = connection.getErrorStream();
-                    }
-
-                    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                    int nRead;
-                    byte[] data = new byte[1024];
-                    while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-                        buffer.write(data, 0, nRead);
-                    }
-
-                    buffer.flush();
-                    return buffer.toByteArray();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(byte[] bytes) {
-                listener.onComplete(bytes);
-            }
-        };
-
-        task.execute(url, message);
-    }
-
-    public static void SMessageCIClientTest() throws NullArgumentException, SecureMessageWrapException, IOException {
-
-        PrivateKey privateKey = new PrivateKey(Base64.decode(ClientPrivateKey.getBytes("UTF-8"), Base64.NO_WRAP));
-        PublicKey publicKey = new PublicKey(Base64.decode(ServerPublicKey.getBytes("UTF-8"), Base64.NO_WRAP));
-        Log.d("SMC", "privateKey1 = " + Arrays.toString(privateKey.toByteArray()));
-        Log.d("SMC", "publicKey1 = " + Arrays.toString(publicKey.toByteArray()));
+        PrivateKey privateKey = new PrivateKey(Base64.decode(CLIENT_PRIVATE_KEY.getBytes(CHARSET), Base64.NO_WRAP));
+        PublicKey publicKey = new PublicKey(Base64.decode(SERVER_PUBLIC_KEY.getBytes(CHARSET), Base64.NO_WRAP));
+        Log.d(LOG_TAG, "privateKey1 = " + Arrays.toString(privateKey.toByteArray()));
+        Log.d(LOG_TAG, "publicKey1 = " + Arrays.toString(publicKey.toByteArray()));
 
         final SecureMessage sm = new SecureMessage(privateKey, publicKey);
 
-        byte[] wrappedMessage = sm.wrap(Message.getBytes("UTF-8"));
-        String EncodedMessage = Base64.encodeToString(wrappedMessage, Base64.NO_WRAP);
-        Log.d("SMC", "EncodedMessage = " + EncodedMessage);
+        byte[] wrappedMessage = sm.wrap(MESSAGE.getBytes(CHARSET));
+        String encodedMessage = Base64.encodeToString(wrappedMessage, Base64.NO_WRAP);
+        Log.d(LOG_TAG, "EncodedMessage = " + encodedMessage);
 
         // from iOS
         //EncodedMessage = "ICcEJjgAAAAAAQFADAAAABAAAAAEAAAAfMHW4JAVNfHuuzDCQyk9iVbS7wpcIqP7Uw4EGkBUTZ8=";
 
-        PostRequest(URL, EncodedMessage, new CallbackListener<byte[]>() {
+        httpClient.sendMessageAsync(URL, encodedMessage, CHARSET, new HttpCallback() {
+
             @Override
-            public void onComplete(byte[] value) {
+            public void onSuccess(byte[] response) {
                 try {
-                    String unwrappedResult = new String(sm.unwrap(value), StandardCharsets.UTF_8);
+                    String unwrappedResult = new String(sm.unwrap(response), CHARSET);
                     System.out.println(unwrappedResult);
-                    Log.d("SMC", "unwrappedResult = " + unwrappedResult);
+                    Log.d(LOG_TAG, "unwrappedResult = " + unwrappedResult);
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    onFail(e);
                 }
+            }
+
+            @Override
+            public void onFail(Exception ex) {
+                Log.e(LOG_TAG, "", ex);
             }
         });
     }

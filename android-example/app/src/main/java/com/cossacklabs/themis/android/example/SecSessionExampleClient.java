@@ -10,7 +10,6 @@ import com.cossacklabs.themis.PublicKey;
 import com.cossacklabs.themis.SecureSession;
 import com.cossacklabs.themis.SecureSessionException;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -22,7 +21,7 @@ import java.util.concurrent.Executors;
 // https://themis.cossacklabs.com/interactive-simulator/setup/
 // Server public key ("server key"),
 
-public class SecSessionExampleClient {
+class SecSessionExampleClient {
 
     private final static String LOG_TAG = "SSC";
 
@@ -64,13 +63,12 @@ public class SecSessionExampleClient {
 
             @Override
             public void onFail(Exception ex) {
-                ex.printStackTrace();
                 Log.e(LOG_TAG, "startSession", ex);
             }
         });
     }
 
-    private void sendRealMessage(final SecureSession ss) throws IOException, SecureSessionException, NullArgumentException {
+    private void sendRealMessage(final SecureSession ss) throws SecureSessionException, NullArgumentException {
         byte[] wrappedMessage = ss.wrap(MESSAGE.getBytes(CHARSET));
         String base64Message = Base64.encodeToString(wrappedMessage, Base64.NO_WRAP);
 
@@ -90,13 +88,12 @@ public class SecSessionExampleClient {
 
             @Override
             public void onFail(Exception ex) {
-                ex.printStackTrace();
                 Log.e(LOG_TAG, "sendRealMessage", ex);
             }
         });
     }
 
-    public void testSSessionCIClient() throws SecureSessionException {
+    void testSSessionCIClient() throws SecureSessionException {
         ISessionCallbacks callbacks = new ISessionCallbacks() {
 
             @Override
