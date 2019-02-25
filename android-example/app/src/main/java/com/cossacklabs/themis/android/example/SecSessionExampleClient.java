@@ -1,6 +1,5 @@
 package com.cossacklabs.themis.android.example;
 
-import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
@@ -8,24 +7,13 @@ import com.cossacklabs.themis.ISessionCallbacks;
 import com.cossacklabs.themis.NullArgumentException;
 import com.cossacklabs.themis.PrivateKey;
 import com.cossacklabs.themis.PublicKey;
-import com.cossacklabs.themis.SecureMessageWrapException;
 import com.cossacklabs.themis.SecureSession;
 import com.cossacklabs.themis.SecureSessionException;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-
-import javax.net.ssl.HttpsURLConnection;
+import java.util.concurrent.Executors;
 
 // ---------------------- IMPORTANT SETUP ---------------------------------------
 
@@ -33,96 +21,33 @@ import javax.net.ssl.HttpsURLConnection;
 // https://themis.cossacklabs.com/interactive-simulator/setup/
 // Server public key ("server key"),
 
-public class SecSessionExampleClient {
+class SecSessionExampleClient {
 
-    public static String ClientId = "ULzsfYGzScUisNV";
-    public static String ServerId = "mLAResUZAQcQXXl";
+    private final static String LOG_TAG = "SSC";
 
-    public static String ClientPrivateKey = "UkVDMgAAAC1EvnquAPUxxwJsoJxoMAkEF7c06Fo7dVwnWPnmNX5afyjEEGmG";
-    public static String ClientPublicKey = "VUVDMgAAAC18urRTA1H1hts93vlLXX59OuyVnY1tGFxl/F3PkhDtzrdQETMi";
-    public static String ServerPublicKey = "VUVDMgAAAC0boM1EAvAkoWsfqbMvugv/YzzMPC6AeKT/t5gtCb3xyPpEJJB/";
+    private final static String CLIENT_ID = "ULzsfYGzScUisNV";
+    private final static String SERVER_ID = "mLAResUZAQcQXXl";
+    private final static String CLIENT_PRIVATE_KEY = "UkVDMgAAAC1EvnquAPUxxwJsoJxoMAkEF7c06Fo7dVwnWPnmNX5afyjEEGmG";
+    private final static String CLIENT_PUBLIC_KEY = "VUVDMgAAAC18urRTA1H1hts93vlLXX59OuyVnY1tGFxl/F3PkhDtzrdQETMi";
+    private final static String SERVER_PUBLIC_KEY = "VUVDMgAAAC0boM1EAvAkoWsfqbMvugv/YzzMPC6AeKT/t5gtCb3xyPpEJJB/";
 
-    public static String Message = "msg msg msg :)";
-    public static String URL = "https://themis.cossacklabs.com/api/ULzsfYGzScUisNV/";
+    private final static String MESSAGE = "msg msg msg :)";
+    private final static String URL = "https://themis.cossacklabs.com/api/ULzsfYGzScUisNV/";
 
-    public static String CHARSET = "UTF-8";
+    private final static Charset CHARSET = StandardCharsets.UTF_8;
 
+    private final HttpClient client = new HttpClient(Executors.newSingleThreadExecutor());
 
-    public static void PostRequest(String url, String message, final CallbackListener<byte[]> listener) throws IOException {
-        AsyncTask<String, Void, byte[]> task = new AsyncTask<String, Void, byte[]>() {
+    private void startSession(final SecureSession ss, String base64MessageToSend) {
+        client.sendMessageAsync(URL, base64MessageToSend, CHARSET, new HttpCallback() {
             @Override
-            protected byte[] doInBackground(String... strings) {
-                String httpsURL = strings[0];
-                String message = strings[1];
-
+            public void onSuccess(byte[] response) {
                 try {
-                    String query = "message="+ URLEncoder.encode(message,"UTF-8");
-                    //String query = "message="+message;
-
-                    java.net.URL url = new URL(httpsURL);
-
-                    HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Content-length", String.valueOf(query.length()));
-                    connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
-                    connection.setDoInput(true);
-
-                    OutputStream outputStream = new BufferedOutputStream(connection.getOutputStream());
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
-                    writer.write(query);
-                    writer.flush();
-                    writer.close();
-                    outputStream.close();
-
-                    connection.connect();
-
-                    String m = connection.getResponseMessage();
-                    Log.d("SMC", "getResponseMessage = " + m);
-
-                    InputStream inputStream;
-
-                    // get stream
-                    if (connection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
-                        inputStream = connection.getInputStream();
-                    } else {
-                        inputStream = connection.getErrorStream();
-                    }
-
-                    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                    int nRead;
-                    byte[] data = new byte[1024];
-                    while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-                        buffer.write(data, 0, nRead);
-                    }
-
-                    buffer.flush();
-                    return buffer.toByteArray();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(byte[] bytes) {
-                listener.onComplete(bytes);
-            }
-        };
-
-        task.execute(url, message);
-    }
-
-    public static void startSession(final SecureSession ss, String base64MessageToSend) throws IOException {
-        PostRequest(URL, base64MessageToSend, new CallbackListener<byte[]>() {
-            @Override
-            public void onComplete(byte[] value) {
-                try {
-                    byte[] unwrappedData = ss.unwrap(value).getData();
+                    byte[] unwrappedData = ss.unwrap(response).getData();
                     String unwrappedResult = new String(unwrappedData, StandardCharsets.UTF_8);
                     System.out.println(unwrappedResult);
-                    Log.d("SMC", "session establish in progress = " + unwrappedResult);
+
+                    Log.d(LOG_TAG, "session establish in progress = " + unwrappedResult);
                     String messageToSend2 = Base64.encodeToString(unwrappedData, Base64.NO_WRAP);
 
                     if (!ss.isEstablished()) {
@@ -132,46 +57,53 @@ public class SecSessionExampleClient {
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    onFail(e);
                 }
+            }
+
+            @Override
+            public void onFail(Exception ex) {
+                Log.e(LOG_TAG, "startSession", ex);
             }
         });
     }
 
-    public static void sendRealMessage(final SecureSession ss) throws IOException, SecureSessionException, NullArgumentException {
-        byte[] wrappedMessage = ss.wrap(Message.getBytes("UTF-8"));
+    private void sendRealMessage(final SecureSession ss) throws SecureSessionException, NullArgumentException {
+        byte[] wrappedMessage = ss.wrap(MESSAGE.getBytes(CHARSET));
         String base64Message = Base64.encodeToString(wrappedMessage, Base64.NO_WRAP);
 
-        PostRequest(URL, base64Message, new CallbackListener<byte[]>() {
+        client.sendMessageAsync(URL, base64Message, CHARSET, new HttpCallback() {
             @Override
-            public void onComplete(byte[] value) {
+            public void onSuccess(byte[] response) {
                 try {
-                    byte[] unwrappedData = ss.unwrap(value).getData();
+                    byte[] unwrappedData = ss.unwrap(response).getData();
                     String unwrappedResult = new String(unwrappedData, StandardCharsets.UTF_8);
                     System.out.println(unwrappedResult);
-                    Log.d("SMC", "message received = " + unwrappedResult);
 
+                    Log.d(LOG_TAG, "message received = " + unwrappedResult);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    onFail(e);
                 }
+            }
+
+            @Override
+            public void onFail(Exception ex) {
+                Log.e(LOG_TAG, "sendRealMessage", ex);
             }
         });
     }
 
-    public static void SSessionCIClientTest() throws NullArgumentException, SecureMessageWrapException, IOException, SecureSessionException{
+    void testSSessionCIClient() throws SecureSessionException {
         ISessionCallbacks callbacks = new ISessionCallbacks() {
 
             @Override
             public PublicKey getPublicKeyForId(SecureSession session, byte[] id) {
-
-                try {
-                    byte[] serverId = ServerId.getBytes(CHARSET);
-                    if (Arrays.equals(id, serverId)) {
-                        PublicKey publicKey = new PublicKey(Base64.decode(ServerPublicKey.getBytes("UTF-8"), Base64.NO_WRAP));
-                        Log.d("SMC", "publicKey1 = " + Arrays.toString(publicKey.toByteArray()));
-                        return publicKey;
-                    }
-                } catch (Exception e) {};
+                byte[] serverId = SERVER_ID.getBytes(CHARSET);
+                if (Arrays.equals(id, serverId)) {
+                    PublicKey publicKey = new PublicKey(Base64.decode(SERVER_PUBLIC_KEY.getBytes(CHARSET), Base64.NO_WRAP));
+                    Log.d(LOG_TAG, "publicKey1 = " + Arrays.toString(publicKey.toByteArray()));
+                    return publicKey;
+                }
                 return null;
             }
 
@@ -180,10 +112,10 @@ public class SecSessionExampleClient {
             }
         };
 
-        PrivateKey privateKey = new PrivateKey(Base64.decode(ClientPrivateKey.getBytes("UTF-8"), Base64.NO_WRAP));
-        Log.d("SMC", "privateKey1 = " + Arrays.toString(privateKey.toByteArray()));
+        PrivateKey privateKey = new PrivateKey(Base64.decode(CLIENT_PRIVATE_KEY.getBytes(CHARSET), Base64.NO_WRAP));
+        Log.d(LOG_TAG, "privateKey1 = " + Arrays.toString(privateKey.toByteArray()));
 
-        final SecureSession ss = new SecureSession(ClientId.getBytes(CHARSET), privateKey, callbacks);
+        final SecureSession ss = new SecureSession(CLIENT_ID.getBytes(CHARSET), privateKey, callbacks);
 
         final String messageToSend = Base64.encodeToString(ss.generateConnectRequest(), Base64.NO_WRAP);
         startSession(ss, messageToSend);
