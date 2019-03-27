@@ -17,24 +17,8 @@ https://github.com/cossacklabs/themis/wiki/Java-and-Android-Howto
 ### Android example
 
 1. Open `android-example`, import as Android Studio project.
-2. Included library Themis for Android. Include Maven repository and link Themis as describe below:
-
-build.gradle:
-```    
-repositories {
-    google()
-    jcenter()
-    maven { url "https://dl.bintray.com/cossacklabs/maven/" }
-}
-
-dependencies {
-    implementation 'com.cossacklabs.com:themis:0.10.0'
-}
-```
-
+2. Included library Themis for Android via bintray maven repository (see below).
 3. Run `MainActivitySecureCell` as secure data storage or `MainActivitySecureMessage` to see secure messaging example.
-
-
 
 # What are these examples?
 
@@ -93,7 +77,7 @@ For Java check `SMessageClient` and `SSessionClient`. For Android check `MainAct
 Comprehenvise documentation can be found below: https://themis.cossacklabs.com/interactive-simulator/setup/
 
 
-# How to build Themis library manually?
+# How to install Themis
 
 ### For Desktop Java
 
@@ -108,22 +92,21 @@ Comprehenvise documentation can be found below: https://themis.cossacklabs.com/i
 
 ### For Android
 
-1. Build `themis.aar` archive [using Docker image](https://github.com/cossacklabs/themis/wiki/Java-and-Android-Howto):
-
-```
-docker run --rm -it -v $(pwd):/projects cossacklabs/android-build bash -c 'git clone https://github.com/cossacklabs/themis.git && cd themis && git submodule update --init && ./gradlew assembleRelease'
-```
-
-2. Link compiled library. You will get Themis as complied .aar library in folder `build/outputs/aar/`. Copy archive into `android-example/app/libs/` folder, and link in `build.gradle`
+1. Add bintray repository into your repositories from **`build.gradle`**
 
 ```
 repositories {
-	flatDir {
-		dirs 'libs'
-	}
+    google()
+    jcenter()
+    maven { url "https://dl.bintray.com/cossacklabs/maven/" }
 }
+```
 
+2. Link to themis from **`app/build.gradle`**
+
+```
 dependencies {
-	implementation(name: 'themis-0.10.0', ext: 'aar')
+     // ....
+    implementation 'com.cossacklabs.com:themis:0.10.0'
 }
 ```
