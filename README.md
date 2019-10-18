@@ -87,7 +87,9 @@ Comprehenvise documentation can be found below: https://themis.cossacklabs.com/i
 
 3. Compile `themis_jni` that uses BoringSSL according instructions in the [themis -> Java and Android Howto](https://github.com/cossacklabs/themis/wiki/Java-and-Android-Howto#building-themis-for-java) section.
 
-4. Link compiled library to your project. Take `libthemis_jni` shared library located in the `build_with_boringssl_jni` folder. Copy library and put into `java-example/lib` folder.
+4. Link compiled library to your project. Take `libthemis_jni` shared library located in the `build_with_boringssl_jni` folder. Copy library and put into `java-example/lib` folder. Link library to the project (if you use IDEA: `File > Project structure > Lbraries > lib > Java > lib/libthemis_jni`)
+
+
 
 
 ### For Android
@@ -107,6 +109,6 @@ repositories {
 ```
 dependencies {
      // ....
-    implementation 'com.cossacklabs.com:themis:0.10.0'
+    implementation 'com.cossacklabs.com:themis:+' // better to check which version is current latest and link to it
 }
 ```
