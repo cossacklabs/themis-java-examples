@@ -27,16 +27,18 @@ public class MainActivitySecureMessage extends AppCompatActivity {
         // Check secure message
         try {
 
-//            secureMessageLocal();
+            secureMessageLocal();
 
             // tests with Themis Interactive simulator
             // setup Themis IS first:
             // https://themis.cossacklabs.com/interactive-simulator/setup/
-            new SecMessageExampleClient().testSMessageCIClient();
+            //new SecMessageExampleClient().testSMessageCIClient();
 
         } catch (NullArgumentException e) {
             e.printStackTrace();
         } catch (SecureMessageWrapException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
