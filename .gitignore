@@ -5,6 +5,12 @@ cmake-build-debug/
 ## File-based project format:
 *.iws
 
+# Directory-based project format:
+java-example/.idea/tasks.xml
+java-example/.idea/shelf/
+java-example/.idea/usage.statistics.xml
+java-example/.idea/workspace.xml
+
 ## Plugin-specific files:
 
 # IntelliJ

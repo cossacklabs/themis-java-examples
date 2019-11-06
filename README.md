@@ -1,18 +1,16 @@
 Desktop Java and Android Java simple example projects.
 
-This are demo projects that enhance documentation for Java and Android that you can find on wiki:
+This are demo projects that enhance documentation for Java and Android:
 
-https://github.com/cossacklabs/themis/wiki/Java-and-Android-Howto
-
+https://docs.cossacklabs.com/pages/java-and-android-howto/
 
 # How to run?
 
 ### Java example
 
-1. Open `java-example`, import as IDEA project.
-2. Included library: `lib/libthemis_jni.dylib`, which should be manually built (see below).
-3. Included themis/java source: `src/com/cossacklabs/themis`.
-4. Run `main.java`.
+1. Install Themis Core ([see below](#for-desktop-java)).
+2. Open `java-example` in IntelliJ IDEA.
+3. Run `main.java`.
 
 ### Android example
 
@@ -31,7 +29,7 @@ encryptDataForStoring()
 ```
 
 1.1 Create SecureCell with desired password:
- 
+
 ```
 SecureCell sc = new SecureCell(passKey);
 ```
@@ -74,23 +72,21 @@ Both examples contains ready-to-use solutions to test asymmetric encryption with
 
 For Java check `SMessageClient` and `SSessionClient`. For Android check `MainActivitySecureMessage` and `MainActivitySecureSession`.
 
-Comprehenvise documentation can be found below: https://themis.cossacklabs.com/interactive-simulator/setup/
+Comprehenvise documentation can be found below: https://docs.cossacklabs.com/simulator/interactive/
 
 
 # How to install Themis
 
 ### For Desktop Java
 
-1. Copy latest Themis Java code to your project from ([themis/src/wrappers/themis/java](https://github.com/cossacklabs/themis/tree/master/src/wrappers/themis/java/com/cossacklabs/themis)). Paste into `java-example/src` folder.
+Normally you will only need to install Themis Core [from repositories](https://docs.cossacklabs.com/pages/documentation-themis/#installing-themis-core). Major operating systems are supported.
 
-2. Clone and compile BoringSSL for your machine according instructions in the [themis -> Building and Installing -> BoringSSL](https://github.com/cossacklabs/themis/wiki/Building-and-installing#boringssl) section. 
+This example project already includes prebuilt Themis JNI library for modern 64-bit Linux and macOS systems.
 
-3. Compile `themis_jni` that uses BoringSSL according instructions in the [themis -> Java and Android Howto](https://github.com/cossacklabs/themis/wiki/Java-and-Android-Howto#building-themis-for-java) section.
-
-4. Link compiled library to your project. Take `libthemis_jni` shared library located in the `build_with_boringssl_jni` folder. Copy library and put into `java-example/lib` folder. Link library to the project (if you use IDEA: `File > Project structure > Lbraries > lib > Java > lib/libthemis_jni`)
-
-
-
+If this does not work, you may need to build Themis from source code:
+1. Follow [these instructions](https://docs.cossacklabs.com/pages/documentation-themis/#java-wrapper-installation) to build Themis JNI library.
+2. Copy JavaThemis source code (`src/wrappers/themis/java`) into the `java-example/src` directory.
+3. Copy Themis JNI library (`build/libthemis_jni.*`) into the `java-example/lib` directory.
 
 ### For Android
 
