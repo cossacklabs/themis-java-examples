@@ -1,6 +1,6 @@
 Desktop Java and Android Java simple example projects.
 
-This are demo projects that enhance documentation for Java and Android:
+These are demo projects that enhance documentation for Java and Android:
 
 https://docs.cossacklabs.com/pages/java-and-android-howto/
 
@@ -11,6 +11,20 @@ https://docs.cossacklabs.com/pages/java-and-android-howto/
 1. Install Themis Core ([see below](#for-desktop-java)).
 2. Open `java-example` in IntelliJ IDEA.
 3. Run `main.java`.
+
+_Note_: if you want to use bundled (or copied) `lib/libthemis_jni.{so or dylib}`
+you will have to add `LD_LIBRARY_PATH=lib` (even better, use the absolute path to `lib`)
+to environment variables of the `Application` `main` configuration, so the JVM
+will be able to find it.
+
+If you cannot run the example app because of error like this
+```
+Exception in thread "main" java.lang.UnsatisfiedLinkError: <some path>/libthemis_jni.so: libthemis.so.0: cannot open shared object file: No such file or directory
+```
+you will have to add `/usr/local/lib` (or wherever the `libthemis` is stored)
+to the same `LD_LIBRARY_PATH` variable. You can combine two directories like this:
+`LD_LIBRARY_PATH=lib:/usr/local/lib` (just separate with `:`).
+This magic variable may be used on both Linux and macOS.
 
 ### Android example
 
@@ -84,9 +98,12 @@ Normally you will only need to install Themis Core [from repositories](https://d
 This example project already includes prebuilt Themis JNI library for modern 64-bit Linux and macOS systems.
 
 If this does not work, you may need to build Themis from source code:
-1. Follow [these instructions](https://docs.cossacklabs.com/pages/documentation-themis/#java-wrapper-installation) to build Themis JNI library.
-2. Copy JavaThemis source code (`src/wrappers/themis/java`) into the `java-example/src` directory.
-3. Copy Themis JNI library (`build/libthemis_jni.*`) into the `java-example/lib` directory.
+1. Follow [these instructions](https://docs.cossacklabs.com/themis/languages/java/installation-desktop/) to build Themis JNI library.
+   You will also need to build the JAR.
+2. Copy Themis JNI library (`build/libthemis_jni.*`) into the `java-example/lib` directory.
+3. Copy Themis JAR (`src/wrappers/themis/java/build/libs/java-themis-*.jar`)
+   into the `java-example/lib` directory and make sure `build.gradle` contains the same file name.
+   Both `classpath` and `implementation` lines should be updated.
 
 ### For Android
 
