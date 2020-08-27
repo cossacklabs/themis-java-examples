@@ -1,6 +1,6 @@
 Desktop Java and Android Java simple example projects.
 
-This are demo projects that enhance documentation for Java and Android:
+These are demo projects that enhance documentation for Java and Android:
 
 https://docs.cossacklabs.com/pages/java-and-android-howto/
 
@@ -8,9 +8,20 @@ https://docs.cossacklabs.com/pages/java-and-android-howto/
 
 ### Java example
 
-1. Install Themis Core ([see below](#for-desktop-java)).
+1. Install Themis Core and Themis JNI library ([see below](#for-desktop-java)).
 2. Open `java-example` in IntelliJ IDEA.
 3. Run `main.java`.
+
+_Note_: If you cannot run the example app because of error like this
+```
+Exception in thread "main" java.lang.UnsatisfiedLinkError: <some path>/libthemis_jni.so: libthemis.so.0: cannot open shared object file: No such file or directory
+```
+you will have to add `LD_LIBRARY_PATH=/usr/local/lib` (or wherever the `libthemis` is stored)
+to environment variables of the `Application` `main` configuration, so the JVM
+will be able to find it. This magic variable may be used on both Linux and macOS.
+
+If `libthemis_jni.so` is the one it cannot find, you may want to try adding JVM
+option `java.library.path=/path/to/dir_with_libthemis_jni.so`.
 
 ### Android example
 
@@ -68,25 +79,34 @@ secureMessageLocal
 
 # Themis Interactive simulator
 
-Both examples contains ready-to-use solutions to test asymmetric encryption with Themis Interactive Server. No need to run your own server to check if you have implemented encryption correctly.
+Both examples contain ready-to-use solutions to test asymmetric encryption with Themis Interactive Server.
+No need to run your own server to check if you have implemented encryption correctly.
 
 For Java check `SMessageClient` and `SSessionClient`. For Android check `MainActivitySecureMessage` and `MainActivitySecureSession`.
 
-Comprehenvise documentation can be found below: https://docs.cossacklabs.com/simulator/interactive/
+Comprehensive documentation can be found below: https://docs.cossacklabs.com/simulator/interactive/
 
 
 # How to install Themis
 
 ### For Desktop Java
 
-Normally you will only need to install Themis Core [from repositories](https://docs.cossacklabs.com/pages/documentation-themis/#installing-themis-core). Major operating systems are supported.
+Normally you will only need to install
+[Themis Core](https://docs.cossacklabs.com/themis/installation/installation-from-packages/#installing-themis-from-packages)
+and [Themis JNI lib](https://docs.cossacklabs.com/themis/languages/java/installation-desktop/) from repositories.
+Major operating systems are supported.
 
-This example project already includes prebuilt Themis JNI library for modern 64-bit Linux and macOS systems.
+This example project already includes prebuilt Themis JAR library so only those
+two packages are expected to be installed.
 
 If this does not work, you may need to build Themis from source code:
-1. Follow [these instructions](https://docs.cossacklabs.com/pages/documentation-themis/#java-wrapper-installation) to build Themis JNI library.
-2. Copy JavaThemis source code (`src/wrappers/themis/java`) into the `java-example/src` directory.
-3. Copy Themis JNI library (`build/libthemis_jni.*`) into the `java-example/lib` directory.
+1. Follow [these instructions](https://docs.cossacklabs.com/themis/installation/installation-from-sources/)
+   to build Themis Core.
+2. Follow [these instructions](https://docs.cossacklabs.com/themis/languages/java/installation-desktop/)
+   to build Themis JNI library. You will also need to build the JAR.
+3. Copy Themis JAR (`src/wrappers/themis/java/build/libs/java-themis-*.jar`)
+   into the `java-example/lib` directory and make sure `build.gradle` contains the same file name.
+   Both `classpath` and `implementation` lines should be updated.
 
 ### For Android
 

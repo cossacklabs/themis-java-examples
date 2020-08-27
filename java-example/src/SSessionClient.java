@@ -77,7 +77,7 @@ public class SSessionClient {
 						return new PublicKey(Base64.getDecoder().decode("VUVDMgAAAC3x8WGaAxu+rPQ7lRLQ97nDwt1Evooip1YGu5DQk8FFBnhYSI36"));
 					}
 				} catch (Exception e) {
-          System.out.println("Exception " + e);
+					System.out.println("Exception " + e);
 				}
 				return null;
 			}

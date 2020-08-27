@@ -34,11 +34,7 @@ public class MainActivitySecureMessage extends AppCompatActivity {
             // https://themis.cossacklabs.com/interactive-simulator/setup/
             //new SecMessageExampleClient().testSMessageCIClient();
 
-        } catch (NullArgumentException e) {
-            e.printStackTrace();
-        } catch (SecureMessageWrapException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (NullArgumentException | SecureMessageWrapException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }

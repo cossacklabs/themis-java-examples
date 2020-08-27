@@ -1,0 +1,21 @@
+apply plugin: 'java'
+
+buildscript {
+    repositories {
+        flatDir { dirs 'lib' }
+    }
+
+    dependencies {
+        classpath 'com.cossacklabs.themis:com.cossacklabs.themis-0.13.1'
+    }
+}
+
+dependencies {
+    implementation files("lib/com.cossacklabs.themis-0.13.1.jar")
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ["src"]
+    }
+}

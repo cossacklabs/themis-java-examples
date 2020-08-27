@@ -30,16 +30,15 @@ public class main {
 
 
     System.out.println("Running SecureCell example");
-    SecureCell sc = new SecureCell(password);
+    SecureCell.Seal sc = SecureCell.SealWithPassphrase(password);
 
-    SecureCellData encryptedData = sc.protect(password, optionalContext, message);
-    String encryptedDataString = Base64.getEncoder().encodeToString(encryptedData.getProtectedData());
+    byte[] encryptedData = sc.encrypt(message, optionalContext);
+    String encryptedDataString = Base64.getEncoder().encodeToString(encryptedData);
     System.out.println("Encrypted encoded data = \n" + encryptedDataString);
 
     byte[] decodedEncryptedString = Base64.getDecoder().decode(encryptedDataString);
-    SecureCellData encryptedDataFromString = new SecureCellData(decodedEncryptedString, null);
 
-    byte[] unprotected = sc.unprotect(password, optionalContext, encryptedDataFromString);
+    byte[] unprotected = sc.decrypt(decodedEncryptedString, optionalContext);
     String decryptedString = new String(unprotected);
     System.out.println("Decrypted data = "+ decryptedString);
   }
