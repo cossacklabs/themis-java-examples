@@ -1,5 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+// NOTE: JCenter is shutting down but still required for now and stays in the repo list
+// until Android Studio itself completes transition
+// https://developer.android.com/studio/build/jcenter-migration
+
 buildscript {
     repositories {
         google()
@@ -17,6 +21,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 }
 
