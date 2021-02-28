@@ -110,13 +110,13 @@ If this does not work, you may need to build Themis from source code:
 
 ### For Android
 
-1. Add bintray repository into your repositories from **`build.gradle`**
+1. Add Maven Central repository to your repositories in **`build.gradle`**
 
 ```
 repositories {
     google()
     jcenter()
-    maven { url "https://dl.bintray.com/cossacklabs/maven/" }
+    mavenCentral()
 }
 ```
 
@@ -124,7 +124,9 @@ repositories {
 
 ```
 dependencies {
-     // ....
-    implementation 'com.cossacklabs.com:themis:+' // better to check which version is current latest and link to it
+    // Add JavaThemis as runtime dependency of your application.
+    // Always pin the latest version, you can find it here:
+    // https://search.maven.org/artifact/com.cossacklabs.com/themis
+    implementation 'com.cossacklabs.com:themis:0.13.1'
 }
 ```
