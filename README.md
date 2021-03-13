@@ -91,22 +91,27 @@ Comprehensive documentation can be found below: https://docs.cossacklabs.com/sim
 
 ### For Desktop Java
 
-Normally you will only need to install
-[Themis Core](https://docs.cossacklabs.com/themis/installation/installation-from-packages/#installing-themis-from-packages)
-and [Themis JNI lib](https://docs.cossacklabs.com/themis/languages/java/installation-desktop/) from repositories.
-Major operating systems are supported.
+ 1. Install Themis Core and Themis JNI libraries.
 
-This example project already includes prebuilt Themis JAR library so only those
-two packages are expected to be installed.
+    Follow [the instructions](https://docs.cossacklabs.com/themis/languages/java/installation-desktop/).
+    Linux and macOS are supported.
 
-If this does not work, you may need to build Themis from source code:
-1. Follow [these instructions](https://docs.cossacklabs.com/themis/installation/installation-from-sources/)
-   to build Themis Core.
-2. Follow [these instructions](https://docs.cossacklabs.com/themis/languages/java/installation-desktop/)
-   to build Themis JNI library. You will also need to build the JAR.
-3. Copy Themis JAR (`src/wrappers/themis/java/build/libs/java-themis-*.jar`)
-   into the `java-example/lib` directory and make sure `build.gradle` contains the same file name.
-   Both `classpath` and `implementation` lines should be updated.
+ 2. Add Maven Central repository and use `java-themis` in **`build.gradle`**:
+
+    ```
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        // Add JavaThemis as runtime dependency of your application.
+        // Always pin the latest version, you can find it here:
+        // https://search.maven.org/artifact/com.cossacklabs.com/java-themis
+        implementation 'com.cossacklabs.com:java-themis:0.13.1'
+    }
+    ```
+
+    Please note that the package name is different from Android.
 
 ### For Android
 
@@ -130,3 +135,5 @@ dependencies {
     implementation 'com.cossacklabs.com:themis:0.13.1'
 }
 ```
+
+Please note that the package name is different from desktop Java.
