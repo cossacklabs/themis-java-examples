@@ -1,10 +1,12 @@
+# Themis examples for Java and Android
+
 Desktop Java and Android Java simple example projects.
 
 These are demo projects that enhance documentation for Java and Android:
 
 https://docs.cossacklabs.com/pages/java-and-android-howto/
 
-# How to run?
+## How to run?
 
 ### Java example
 
@@ -29,7 +31,7 @@ option `java.library.path=/path/to/dir_with_libthemis_jni.so`.
 2. Included library Themis for Android via bintray maven repository (see below).
 3. Run `MainActivitySecureCell` as secure data storage or `MainActivitySecureMessage` to see secure messaging example.
 
-# What are these examples?
+## What are these examples?
 
 Client code (both Android and Java) contains simple example for symmetric and asymmetric encryption.
 
@@ -77,7 +79,7 @@ secureMessageLocal
 ```
 
 
-# Themis Interactive simulator
+## Themis Interactive simulator
 
 Both examples contain ready-to-use solutions to test asymmetric encryption with Themis Interactive Server.
 No need to run your own server to check if you have implemented encryption correctly.
@@ -87,7 +89,7 @@ For Java check `SMessageClient` and `SSessionClient`. For Android check `MainAct
 Comprehensive documentation can be found below: https://docs.cossacklabs.com/simulator/interactive/
 
 
-# How to install Themis
+## How to install Themis
 
 ### For Desktop Java
 
