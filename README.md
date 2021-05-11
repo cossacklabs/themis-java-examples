@@ -4,6 +4,21 @@ Here you can find simple example projects,
 showing how to integrate [**JavaThemis**](https://github.com/cossacklabs/themis#readme)
 into desktop applications in Java and Android applications in Kotlin.
 
+---
+
+⚠️ **Repository is archived** 📚
+
+We moved the example projects to the main repository to keep them up-to-date more easily:
+
+  - [`docs/examples/android`](https://github.com/cossacklabs/themis/tree/master/docs/examples/android) – Android application in Kotlin
+  - [`docs/examples/java`](https://github.com/cossacklabs/themis/tree/master/docs/examples/java) – desktop application in Java
+
+Examples provided here are not maintained and use JavaThemis 0.13.
+For up-to-date example projects using the latest version of Themis,
+please refer to the main repository.
+
+---
+
 Learn more about [using Themis in Java applications](https://docs.cossacklabs.com/themis/languages/java/)
 as well as [writing Android applications in Kotlin](https://docs.cossacklabs.com/themis/languages/kotlin/).
 
